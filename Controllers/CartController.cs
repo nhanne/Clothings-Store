@@ -16,7 +16,7 @@ namespace Clothings_Store.Controllers
         private readonly ICartService _cartService;
         private readonly IPaymentService _paymentService;
         private readonly ICustomSessionService<string> _session;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSender _emailSender; 
         public CartController(
             StoreContext context,
             ICartService cartService,
