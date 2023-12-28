@@ -5,7 +5,7 @@ using Clothings_Store.Repositories;
 namespace Clothings_Store.Interface;
 public interface IUnitOfWork
 {
-    IRepository<Customer> CustomerRepository { get; }
+    public StoreContext context { get; }
     IRepository<Order> OrderRepository { get; }
     IRepository<Product> ProductRepository { get; }
     IRepository<OrderDetail> OrderDetailsRepository { get; }
@@ -13,26 +13,9 @@ public interface IUnitOfWork
 }
 public class UnitOfWork : IUnitOfWork
 {
-    private StoreContext context;
+    public StoreContext context { get; }
 
-    public UnitOfWork(StoreContext context)
-    {
-        this.context = context;
-    }
-
-    private IRepository<Customer> customerRepository;
-    public IRepository<Customer> CustomerRepository
-    {
-        get
-        {
-            if (customerRepository == null)
-            {
-                customerRepository = new CustomerRepository(context);
-            }
-
-            return customerRepository;
-        }
-    }
+    public UnitOfWork(StoreContext context) => this.context = context;
 
     private IRepository<Order> orderRepository;
     public IRepository<Order> OrderRepository
@@ -74,6 +57,7 @@ public class UnitOfWork : IUnitOfWork
             return orderDetailsRepository;
         }
     }
+
 
     public void SaveChanges()
     {

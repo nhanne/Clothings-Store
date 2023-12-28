@@ -15,8 +15,6 @@ namespace Clothings_Store.Data
 
         public virtual DbSet<Color> Colors { get; set; }
 
-        public virtual DbSet<Customer> Customers { get; set; }
-
         public virtual DbSet<Order> Orders { get; set; }
 
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
@@ -46,7 +44,7 @@ namespace Clothings_Store.Data
 
             modelBuilder.Entity<Color>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__Colors__3214EC074B6E2D47");
+                entity.HasKey(e => e.Id).HasName("PK__Colors");
 
                 entity.Property(e => e.Ghichu).HasMaxLength(50);
                 entity.Property(e => e.Name)
@@ -54,26 +52,9 @@ namespace Clothings_Store.Data
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<Customer>(entity =>
-            {
-                entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC0739C90AAD");
-
-                entity.ToTable("Customer");
-
-                entity.Property(e => e.Address).HasMaxLength(250);
-                entity.Property(e => e.Email)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-                entity.Property(e => e.FullName).HasMaxLength(50);
-                entity.Property(e => e.Phone)
-                    .HasMaxLength(10)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-            });
-
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC076065A524");
+                entity.HasKey(e => e.Id).HasName("PK__Order");
 
                 entity.ToTable("Order");
 
@@ -83,22 +64,18 @@ namespace Clothings_Store.Data
                 entity.Property(e => e.OrdTime).HasColumnType("date");
                 entity.Property(e => e.Status).HasMaxLength(50);
 
-                entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.CustomerId)
-                    .HasConstraintName("FK__Order__CustomerI__30C33EC3");
-
                 entity.HasOne(d => d.Payment).WithMany(p => p.Orders)
                     .HasForeignKey(d => d.PaymentId)
-                    .HasConstraintName("FK__Order__PaymentId__32AB8735");
+                    .HasConstraintName("FK__Order__PaymentId");
 
                 entity.HasOne(d => d.StatusNavigation).WithMany(p => p.Orders)
                     .HasForeignKey(d => d.Status)
-                    .HasConstraintName("FK__Order__Status__2FCF1A8A");
+                    .HasConstraintName("FK__Order__Status");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
-                entity.HasKey(e => new { e.OrderId, e.StockId }).HasName("PK__tmp_ms_x__F1586153AC1F7631");
+                entity.HasKey(e => new { e.OrderId, e.StockId }).HasName("PK__OrderDetail");
 
                 entity.ToTable("OrderDetail");
 
@@ -107,17 +84,17 @@ namespace Clothings_Store.Data
                 entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__OrderDeta__Order__2EDAF651");
+                    .HasConstraintName("FK__OrderDetail__OrderId");
 
                 entity.HasOne(d => d.Stock).WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.StockId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__OrderDeta__Stock__2180FB33");
+                    .HasConstraintName("FK__OrderDetail__StockId");
             });
 
             modelBuilder.Entity<OrderStatus>(entity =>
             {
-                entity.HasKey(e => e.Status).HasName("PK__tmp_ms_x__3A15923EEC714ED5");
+                entity.HasKey(e => e.Status).HasName("PK__OrderStatus");
 
                 entity.ToTable("OrderStatus");
 
@@ -126,7 +103,7 @@ namespace Clothings_Store.Data
 
             modelBuilder.Entity<Payment>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__Payment__3214EC07CB929B86");
+                entity.HasKey(e => e.Id).HasName("PK__Payment");
 
                 entity.ToTable("Payment");
 
@@ -153,12 +130,12 @@ namespace Clothings_Store.Data
 
                 entity.HasOne(d => d.Category).WithMany(p => p.Products)
                     .HasForeignKey(d => d.CategoryId)
-                    .HasConstraintName("FK__Product__Categor__267ABA7A");
+                    .HasConstraintName("FK__Product__CategoryId");
             });
 
             modelBuilder.Entity<Promotion>(entity =>
             {
-                entity.HasKey(e => e.PromotionId).HasName("PK__Promotio__2CB9556BBEE408D1");
+                entity.HasKey(e => e.PromotionId).HasName("PK__Promotion");
 
                 entity.Property(e => e.PromotionId).HasColumnName("promotion_id");
                 entity.Property(e => e.Description)
@@ -181,7 +158,7 @@ namespace Clothings_Store.Data
 
             modelBuilder.Entity<Size>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__Sizes__3214EC07D711A6F5");
+                entity.HasKey(e => e.Id).HasName("PK__Sizes");
 
                 entity.Property(e => e.Ghichu).HasMaxLength(50);
                 entity.Property(e => e.Name)
@@ -192,7 +169,7 @@ namespace Clothings_Store.Data
 
             modelBuilder.Entity<Stock>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__Stock__3214EC078808D165");
+                entity.HasKey(e => e.Id).HasName("PK__Stock");
 
                 entity.ToTable("Stock");
 
@@ -204,15 +181,15 @@ namespace Clothings_Store.Data
 
                 entity.HasOne(d => d.Color).WithMany(p => p.Stocks)
                     .HasForeignKey(d => d.ColorId)
-                    .HasConstraintName("FK__Stock__ColorId__19DFD96B");
+                    .HasConstraintName("FK__Stock__ColorId");
 
                 entity.HasOne(d => d.Product).WithMany(p => p.Stocks)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__Stock__ProductId__18EBB532");
+                    .HasConstraintName("FK__Stock__ProductId");
 
                 entity.HasOne(d => d.Size).WithMany(p => p.Stocks)
                     .HasForeignKey(d => d.SizeId)
-                    .HasConstraintName("FK__Stock__SizeId__1AD3FDA4");
+                    .HasConstraintName("FK__Stock__SizeId");
             });
 
             base.OnModelCreating(modelBuilder);

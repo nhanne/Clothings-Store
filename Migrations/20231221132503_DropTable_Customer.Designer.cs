@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Clothings_Store.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20231124093013_IdentityDB")]
-    partial class IdentityDB
+    [Migration("20231221132503_DropTable_Customer")]
+    partial class DropTable_Customer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Clothings_Store.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Clothings_Store.Models.AppUser", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -105,7 +105,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Category", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Category", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -125,7 +125,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("Category", (string)null);
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Color", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Color", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,7 +150,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("Colors");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Customer", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -187,7 +187,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("Customer", (string)null);
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Order", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Order", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -242,7 +242,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("Order", (string)null);
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.OrderDetail", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.OrderDetail", b =>
                 {
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(450)");
@@ -265,7 +265,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("OrderDetail", (string)null);
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.OrderStatus", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.OrderStatus", b =>
                 {
                     b.Property<string>("Status")
                         .HasMaxLength(50)
@@ -277,7 +277,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("OrderStatus", (string)null);
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Payment", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Payment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -300,7 +300,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("Payment", (string)null);
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Product", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -354,7 +354,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("Product", (string)null);
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Promotion", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Promotion", b =>
                 {
                     b.Property<int>("PromotionId")
                         .ValueGeneratedOnAdd()
@@ -393,7 +393,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("Promotions");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Size", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Size", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -418,7 +418,7 @@ namespace Clothings_Store.Migrations
                     b.ToTable("Sizes");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Stock", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Stock", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -596,26 +596,26 @@ namespace Clothings_Store.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Order", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Order", b =>
                 {
-                    b.HasOne("Clothings_Store.Models.Customer", "Customer")
+                    b.HasOne("Clothings_Store.Models.Database.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .HasConstraintName("FK__Order__CustomerI__30C33EC3");
 
-                    b.HasOne("Clothings_Store.Models.Payment", "Payment")
+                    b.HasOne("Clothings_Store.Models.Database.Payment", "Payment")
                         .WithMany("Orders")
                         .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK__Order__PaymentId__32AB8735");
 
-                    b.HasOne("Clothings_Store.Models.OrderStatus", "StatusNavigation")
+                    b.HasOne("Clothings_Store.Models.Database.OrderStatus", "StatusNavigation")
                         .WithMany("Orders")
                         .HasForeignKey("Status")
                         .HasConstraintName("FK__Order__Status__2FCF1A8A");
 
-                    b.HasOne("Clothings_Store.Models.AppUser", "User")
+                    b.HasOne("Clothings_Store.Models.Database.AppUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
 
@@ -628,15 +628,15 @@ namespace Clothings_Store.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.OrderDetail", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.OrderDetail", b =>
                 {
-                    b.HasOne("Clothings_Store.Models.Order", "Order")
+                    b.HasOne("Clothings_Store.Models.Database.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .IsRequired()
                         .HasConstraintName("FK__OrderDeta__Order__2EDAF651");
 
-                    b.HasOne("Clothings_Store.Models.Stock", "Stock")
+                    b.HasOne("Clothings_Store.Models.Database.Stock", "Stock")
                         .WithMany("OrderDetails")
                         .HasForeignKey("StockId")
                         .IsRequired()
@@ -647,9 +647,9 @@ namespace Clothings_Store.Migrations
                     b.Navigation("Stock");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Product", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Product", b =>
                 {
-                    b.HasOne("Clothings_Store.Models.Category", "Category")
+                    b.HasOne("Clothings_Store.Models.Database.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -659,23 +659,23 @@ namespace Clothings_Store.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Stock", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Stock", b =>
                 {
-                    b.HasOne("Clothings_Store.Models.Color", "Color")
+                    b.HasOne("Clothings_Store.Models.Database.Color", "Color")
                         .WithMany("Stocks")
                         .HasForeignKey("ColorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK__Stock__ColorId__19DFD96B");
 
-                    b.HasOne("Clothings_Store.Models.Product", "Product")
+                    b.HasOne("Clothings_Store.Models.Database.Product", "Product")
                         .WithMany("Stocks")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK__Stock__ProductId__18EBB532");
 
-                    b.HasOne("Clothings_Store.Models.Size", "Size")
+                    b.HasOne("Clothings_Store.Models.Database.Size", "Size")
                         .WithMany("Stocks")
                         .HasForeignKey("SizeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -700,7 +700,7 @@ namespace Clothings_Store.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Clothings_Store.Models.AppUser", null)
+                    b.HasOne("Clothings_Store.Models.Database.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -709,7 +709,7 @@ namespace Clothings_Store.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Clothings_Store.Models.AppUser", null)
+                    b.HasOne("Clothings_Store.Models.Database.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -724,7 +724,7 @@ namespace Clothings_Store.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Clothings_Store.Models.AppUser", null)
+                    b.HasOne("Clothings_Store.Models.Database.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -733,59 +733,59 @@ namespace Clothings_Store.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Clothings_Store.Models.AppUser", null)
+                    b.HasOne("Clothings_Store.Models.Database.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.AppUser", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.AppUser", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Category", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Color", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Color", b =>
                 {
                     b.Navigation("Stocks");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Customer", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Customer", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Order", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Order", b =>
                 {
                     b.Navigation("OrderDetails");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.OrderStatus", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.OrderStatus", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Payment", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Payment", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Product", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Product", b =>
                 {
                     b.Navigation("Stocks");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Size", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Size", b =>
                 {
                     b.Navigation("Stocks");
                 });
 
-            modelBuilder.Entity("Clothings_Store.Models.Stock", b =>
+            modelBuilder.Entity("Clothings_Store.Models.Database.Stock", b =>
                 {
                     b.Navigation("OrderDetails");
                 });

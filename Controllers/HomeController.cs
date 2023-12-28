@@ -2,37 +2,46 @@
 using Clothings_Store.Models.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Clothings_Store.Controllers
 {
     public class HomeController : Controller
     {
         private readonly StoreContext _db;
-        private readonly ILogger<HomeController> _logger;
-        public HomeController(StoreContext context, ILogger<HomeController> logger)
+        private readonly IDistributedCache _distributedCache;
+        public HomeController(StoreContext context, IDistributedCache distributedCache)
         {
             _db = context;
-            _logger = logger;
+            _distributedCache = distributedCache;
+        }
+        public string Redis()
+        {
+            var cacheKey = "TheTime";
+            var currentTime = DateTime.Now.ToString();
+            var cachedTime = _distributedCache.GetString(cacheKey);
+            if (string.IsNullOrEmpty(cachedTime))
+            {
+                // cachedTime = "Expired";
+                // Cache expire trong 5s
+                var options = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(5));
+                // Nạp lại giá trị mới cho cache
+                _distributedCache.SetString(cacheKey, currentTime, options);
+                cachedTime = _distributedCache.GetString(cacheKey);
+            }
+            var result = $"Current Time : {currentTime} \nCached  Time : {cachedTime}";
+            return result;
         }
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                ViewData["Products"] = await _db.Products.OrderByDescending(p => p.Sold).Take(3).ToListAsync();
-                _logger.LogInformation("Connected to database.");
-                return View();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error Connected.");
-                throw;
-            }
+            ViewData["Products"] = await _db.Products.OrderByDescending(p => p.Sold).Take(3).ToListAsync();
+            return View();
         }
         public IActionResult Store()
         {
             return View();
         }
-        public async Task<JsonResult> getData( string? search, string? category, string sort, 
+        public async Task<JsonResult> getData(string? search, string? category, string sort,
                                                int page = 1, int pageSize = 8)
         {
             var query = _db.Products.AsQueryable();
@@ -52,12 +61,12 @@ namespace Clothings_Store.Controllers
             int totalItems = await query.CountAsync();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-            var products = await query.Select(p => new { p,cateName = p.Category.Name} )
+            var products = await query.Select(p => new { p, cateName = p.Category.Name })
                                       .Skip((page - 1) * pageSize)
                                       .Take(pageSize)
                                       .AsNoTracking()
                                       .ToListAsync();
-            return Json(new{ products, TotalPages = totalPages, CurrentPage = page });
+            return Json(new { products, TotalPages = totalPages, CurrentPage = page });
         }
         public async Task<JsonResult> getCategories()
         {
@@ -92,30 +101,31 @@ namespace Clothings_Store.Controllers
         //
         public async Task<JsonResult> Product(int Id)
         {
-            var stock = await _db.Stocks.Where(p => p.ProductId == Id)
-                                   .Select(s => new
+            var stock = await (from s in _db.Stocks
+                               where s.ProductId == Id
+                               select new
+                               {
+                                   size = new
                                    {
-                                       size = new
-                                       {
-                                           id = s.SizeId,
-                                           name = s.Size.Name
-                                       },
-                                       color = new
-                                       {
-                                           id = s.ColorId,
-                                           name = s.Color.Name
-                                       },
-                                       product = new
-                                       {
-                                           id = s.ProductId,
-                                           image = s.Product.Picture,
-                                           name = s.Product.Name,
-                                           costPrice = s.Product.CostPrice,
-                                           unitPrice = s.Product.UnitPrice,
-                                           sale = s.Product.Sale,
-                                           category = s.Product.Category.Name
-                                       }
-                                   }).ToListAsync();
+                                       id = s.SizeId,
+                                       name = s.Size.Name
+                                   },
+                                   color = new
+                                   {
+                                       id = s.ColorId,
+                                       name = s.Color.Name
+                                   },
+                                   product = new
+                                   {
+                                       id = s.ProductId,
+                                       image = s.Product.Picture,
+                                       name = s.Product.Name,
+                                       costPrice = s.Product.CostPrice,
+                                       unitPrice = s.Product.UnitPrice,
+                                       sale = s.Product.Sale,
+                                       category = s.Product.Category.Name
+                                   }
+                               }).ToListAsync();
             var sizes = stock.Select(item => item.size).Distinct().ToList();
             var colors = stock.Select(item => item.color).Distinct().ToList();
             var product = stock.Select(item => item.product).Distinct().ToList();
@@ -134,11 +144,10 @@ namespace Clothings_Store.Controllers
                                                 && p.ColorId == colorId
                                                 && p.SizeId == sizeId)
                                         .FirstOrDefaultAsync();
-
             int quantity = stock == null ? 0 : (int)stock.Stock1!;
             return Json(new { quantity });
         }
 
-        
+
     }
 }

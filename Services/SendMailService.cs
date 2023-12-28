@@ -15,7 +15,7 @@ namespace Clothings_Store.Services
         {
             mailSettings = _mailSettings.Value;
             logger = _logger;
-            logger.LogInformation("Tạo dịch vụ gửi mail");
+            //logger.LogInformation("Tạo dịch vụ gửi mail");
         }
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)

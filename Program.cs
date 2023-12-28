@@ -34,6 +34,10 @@ builder.Services.AddDistributedSqlServerCache(options =>
     options.SchemaName = "dbo";
     options.TableName = "OrderInfoSession";
 });
+builder.Services.AddStackExchangeRedisCache(options => { 
+        options.Configuration = "localhost";
+        options.InstanceName = "SampleInstance";
+});
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -98,7 +102,6 @@ builder.Services.AddScoped<IRepository<Category>, CategoriesRepository>();
 builder.Services.AddScoped<IRepository<Order>, OrdersRepository>();
 builder.Services.AddScoped<IRepository<OrderDetail>, OrderDetailsRepository>();
 builder.Services.AddScoped<IRepository<Product>, ProductsRepository>();
-builder.Services.AddScoped<IRepository<Customer>, CustomerRepository>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -125,11 +128,11 @@ app.Use(async (context, next) =>
     }
     await next();
 
-    if (context.Response.StatusCode == 404 && !context.Response.HasStarted)
-    {
-        context.Request.Path = "/"; 
-        await next();
-    }
+    //if (context.Response.StatusCode == 404 && !context.Response.HasStarted)
+    //{
+    //    context.Request.Path = "/"; 
+    //    await next();
+    //}
 });
 app.UseHttpsRedirection();
 app.UseStaticFiles();
